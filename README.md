@@ -29,12 +29,14 @@ I have worked in the housing industry for over ten years, and I am looking to ex
 
 
 ## Data Sources
-- Valuation and property sales - [Zillow](https://www.zillow.com/research/data/)
+- Valuation, used file ZHVI All Homes Time Series, Smoothed, Seasonally Adjusted($) - [Zillow](https://www.zillow.com/research/data/)
+- Sales - used Metro region data - [Redfin](https://www.redfin.com/news/data-center/)
 <!-- - Mortgage rates over time- https://fred.stlouisfed.org/series/MORTGAGE30US
 - Median income by metro area - https://www.bea.gov/data/income-saving/personal-income-county-metro-and-other-areas -->
 
 
 ## Technology Used
+- Python
 - R
 - Shiny 
 
