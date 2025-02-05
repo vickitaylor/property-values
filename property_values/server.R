@@ -1,30 +1,29 @@
-#
-# This is the server logic of a Shiny web application. You can run the
-# application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    https://shiny.posit.co/
-#
 
-library(shiny)
 
-# Define server logic required to draw a histogram
+# Define server logic 
 function(input, output, session) {
 
-    output$distPlot <- renderPlot({
+  # dates are only the last day of the month but allowing any day for selection, so need to change the date to find in the table 
+  input_min_date <- ceiling_date(as.Date(input_date[1]), "month") - days(1)
+  input_max_date <- ceiling_date(as.Date(input_date[2]), "month") - days(1)
+  
+   
 
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white',
-             xlab = 'Waiting time to next eruption (in mins)',
-             main = 'Histogram of waiting times')
-
-    })
-
+  
+  
 }
 
 
+
+    # output$distPlot <- renderPlot({
+    # 
+    #     # generate bins based on input$bins from ui.R
+    #     x    <- faithful[, 2]
+    #     bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    # 
+    #     # draw the histogram with the specified number of bins
+    #     hist(x, breaks = bins, col = 'darkgray', border = 'white',
+    #          xlab = 'Waiting time to next eruption (in mins)',
+    #          main = 'Histogram of waiting times')
+    # 
+    # })

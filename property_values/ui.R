@@ -1,35 +1,37 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    https://shiny.posit.co/
-#
 
-library(shiny)
 
-# Define UI for application that draws a histogram
-fluidPage(
 
-    # Application title
-    titlePanel("Old Faithful Geyser Data"),
 
-    # Sidebar with a slider input for number of bins
-    sidebarLayout(
-        sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-            plotOutput("distPlot")
-        )
+# Define UI for application t
+ui <- page_fluid(
+  
+  theme = bs_theme(version = 5, bootswatch = 'morph'),
+  
+  # Application title
+  titlePanel('Tennessee Property Valuations'),
+  
+  # Sidebar with a date selection input
+  # sidebarLayout(
+    dateRangeInput(
+      inputId = 'input_date',
+      label = 'Select Date Range',
+      start = min_date,
+      end = max_date,
+      format = 'mm/dd/yyyy'
+    
     )
+  # ),
+  # mainPanel(
+    # plotOutput("distPlot")
+  # )
 )
-
-
+  
+  
+  # sidebarPanel(
+  #     sliderInput("bins",
+  #                 "Number of bins:",
+  #                 min = 1,
+  #                 max = 50,
+  #                 value = 30)
+  
+  # Show a plot of the generated distribution

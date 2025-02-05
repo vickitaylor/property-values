@@ -1,0 +1,85 @@
+---
+title: "property_values"
+output: html_notebook
+---
+
+
+
+```{r}
+library(tidyverse)
+library(lubridate)
+```
+
+
+```{r}
+values <- read_csv('./data/Tn_sales.csv')
+values
+```
+
+
+
+
+```{r}
+region = 'Dyersburg, TN'
+
+values |> 
+  filter(parent_metro_region == region) |> 
+  ggplot(aes(x = period_end, y = estimated_value)) + 
+  geom_line()
+```
+
+
+
+
+```{r}
+
+values |> 
+  filter(parent_metro_region == region) |> 
+  ggplot(aes(x = period_end, y = homes_sold)) + 
+  geom_line()
+
+```
+
+```{r}
+
+values |> 
+  select(period_end, homes_sold) |> 
+  group_by(period_end) |> 
+  summarize(total_sales = sum(homes_sold)) |> 
+  
+  ggplot(aes(x = period_end, y = total_sales)) +
+  geom_line()
+```
+
+
+exploring date functions
+
+```{r}
+values |> 
+  summarize(min_date = min(period_end)) |> 
+  pull(min_date)
+
+values |> 
+  summarize(max_date = max(period_end)) |> 
+  pull(max_date)
+
+```
+
+
+
+only need to use the last date of the month, but allowing all dates to be entered, testing function to see how it works 
+
+```{r}
+ceiling_date(as.Date('2021-01-15'), "month") - days(1)
+```
+
+
+
+
+
+
+
+
+
+
+
