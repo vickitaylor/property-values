@@ -84,13 +84,32 @@ ceiling_date(as.Date('2021-01-15'), "month") - days(1)
       region <- region |>
         filter(parent_metro_region == input)
     }
-region 
+region
+```
+
+
+
+```{r}
+    region |>
+      filter(period_end >= '2015-01-31',
+             period_end <= '2020-01-31') |>
+      ggplot(aes(x = period_end, y = homes_sold)) +
+      geom_line()
+    
 ```
 
 
 
 
 
+```{r}
+    
+
+     region |>
+        group_by(period_end) |> 
+        summarize(estimated_value = mean(estimated_value, na.rm = TRUE))
+
+```
 
 
 

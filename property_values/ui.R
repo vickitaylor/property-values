@@ -6,27 +6,54 @@ ui <- page_fluid(
   titlePanel('Tennessee Property Valuations'),
   
   # Sidebar with a date selection input
-  sidebarLayout(
-    sidebarPanel(
-      dateRangeInput(
-        inputId = 'date',
-        label = 'Select Date Range',
-        start = min_date,
-        end = max_date,
-        format = 'mm/dd/yyyy'
-      ), 
-      selectInput(
-        inputId = 'region', 
-        label = 'Select Region',
-        choices = c( 'All', values |> distinct(parent_metro_region) |> pull(parent_metro_region) |> sort()),
-        selected = 1
-      )
+  navset_pill(
+    nav_panel('Valuation Over Time', 
+              sidebarLayout(
+                sidebarPanel(
+                  dateRangeInput(
+                    inputId = 'date',
+                    label = 'Select Date Range',
+                    start = min_date,
+                    end = max_date,
+                    format = 'mm/dd/yyyy'
+                  ), 
+                  selectInput(
+                    inputId = 'region', 
+                    label = 'Select Region',
+                    choices = c( 'All', values |> distinct(parent_metro_region) |> pull(parent_metro_region) |> sort()),
+                    selected = 1
+                  )
+                ),
+                
+                mainPanel(
+                  plotlyOutput(outputId = 'value_line'), 
+                  plotlyOutput(outputId = 'sales_line')
+                )
+              )
     ),
-    
-    mainPanel(
-      plotlyOutput(outputId = 'value_line')
-    )
-  )
+    nav_panel('Other Page', 
+              sidebarLayout(
+                sidebarPanel(
+                  # dateRangeInput(
+                  #   inputId = 'date',
+                  #   label = 'Select Date Range',
+                  #   start = min_date,
+                  #   end = max_date,
+                  #   format = 'mm/dd/yyyy'
+                  ), 
+                  # selectInput(
+                    # inputId = 'region', 
+                    # label = 'Select Region',
+                    # choices = c( 'All', values |> distinct(parent_metro_region) |> pull(parent_metro_region) |> sort()),
+                    # selected = 1
+                  # )
+                # ),
+                
+                mainPanel(
+                  #plotlyOutput(outputId = 'value_line')
+                )
+              ))
+   )  
 )
 
 # sidebarPanel(
