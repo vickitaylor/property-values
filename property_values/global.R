@@ -8,6 +8,7 @@ library(DT)
 library(plotly)
 library(lubridate)
 library(bslib)
+library(scales)
 
 
 values <- read_csv('../data/Tn_sales.csv')

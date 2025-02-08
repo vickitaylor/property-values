@@ -3,7 +3,7 @@ title: "property_values"
 output: html_notebook
 ---
 
-
+rough working notebook to verify code working prior to using it in shiny app 
 
 ```{r}
 library(tidyverse)
