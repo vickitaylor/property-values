@@ -12,7 +12,7 @@ library(lubridate)
 
 
 ```{r}
-values <- read_csv('./data/Tn_sales.csv')
+values <- read_csv('../data/Tn_sales.csv')
 values
 ```
 
@@ -110,6 +110,22 @@ region
         summarize(estimated_value = mean(estimated_value, na.rm = TRUE))
 
 ```
+
+
+
+
+```{r}
+region |> 
+    mutate(month_int = month(period_end), 
+          month_name = month(period_end, label = TRUE, abbr = TRUE), 
+          year = year(period_end))
+```
+
+
+
+
+
+
 
 
 

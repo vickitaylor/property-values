@@ -18,21 +18,36 @@ function(input, output, session) {
     
     if(input$region != 'All'){
       region <- region |>
-        filter(parent_metro_region == input$region)
+        filter(parent_metro_region == input$region) |> 
+        mutate(
+          month_int = month(period_end), 
+          month_name = month(period_end, label = TRUE, abbr = TRUE), 
+          year = year(period_end)
+        ) |> 
+        group_by(period_end, month_int, month_name, year) |> 
+        summarize(estimated_value = mean(estimated_value, na.rm = TRUE), 
+                  homes_sold = sum(homes_sold, na.rm = TRUE),
+                  total_sales = sum(homes_sold, na.rm = TRUE), 
+                  average_sales = mean(homes_sold, na.rm = TRUE))
     }
     else {
       region <- region |>
-        group_by(period_end) |> 
-        summarize(estimated_value = mean(estimated_value, na.rm = TRUE), homes_sold = sum(homes_sold, na.rm = TRUE))
+        mutate(
+          month_int = month(period_end), 
+          month_name = month(period_end, label = TRUE, abbr = TRUE), 
+          year = year(period_end)
+        ) |> 
+        group_by(period_end, month_int, month_name, year) |> 
+        summarize(estimated_value = mean(estimated_value, na.rm = TRUE), 
+                  homes_sold = sum(homes_sold, na.rm = TRUE),
+                  total_sales = sum(homes_sold, na.rm = TRUE), 
+                  average_sales = mean(homes_sold, na.rm = TRUE))
     }
   })
   
   # region to two things, need to rename them to something
   #
   output$value_line <- renderPlotly({
-    
-    
-    # region <- 'Nashville, Tn'
     plot_value <- region_data() |>
       filter(period_end >= min_date(),
              period_end <= max_date()) |>
@@ -52,6 +67,25 @@ function(input, output, session) {
     
     ggplotly(plot_sales)
   })
+  
+  output$month_bar <- renderPlotly({
+    plot_month <- region_data() |>
+      filter(period_end >= min_date(),
+             period_end <= max_date()) |>
+      group_by(month_int, month_name) |> 
+      summarize(
+        total_sales = sum(total_sales, na.rm = TRUE),
+        average_sales = mean(total_sales / n_distinct(year), na.rm = TRUE)
+      ) |> 
+      arrange(month_int) |> 
+      ggplot(aes(x = month_name, y = get(input$agg_type), fill = month_name)) +
+      geom_bar(stat = 'identity')
+    
+    ggplotly(plot_month)
+  })
+  
+  
+  
   
 }
 

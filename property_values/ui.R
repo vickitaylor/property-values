@@ -1,4 +1,4 @@
-# Define UI for application t
+# Define UI for application 
 ui <- page_fluid(
   theme = bs_theme(version = 5, bootswatch = 'morph'),
   
@@ -22,45 +22,38 @@ ui <- page_fluid(
                     label = 'Select Region',
                     choices = c( 'All', values |> distinct(parent_metro_region) |> pull(parent_metro_region) |> sort()),
                     selected = 1
+                  ), 
+                  radioButtons(
+                    inputId = 'agg_type', 
+                    label = 'Select Aggregation Type', 
+                    choices = c('Total Sales' = 'total_sales', 
+                                'Average Sales per Year' = 'average_sales'),
+                    selected = 'total_sales'
                   )
                 ),
-                
                 mainPanel(
-                  plotlyOutput(outputId = 'value_line'), 
-                  plotlyOutput(outputId = 'sales_line')
+                  tabsetPanel(
+                    tabPanel('Property Valuations',
+                             plotlyOutput(outputId = 'value_line'), 
+                             plotlyOutput(outputId = 'sales_line')
+                    ), 
+                    tabPanel('Sales by Month',
+                             plotlyOutput(outputId = 'month_bar')
+                    )
+                  ), 
                 )
               )
     ),
-    nav_panel('Other Page', 
-              sidebarLayout(
-                sidebarPanel(
-                  # dateRangeInput(
-                  #   inputId = 'date',
-                  #   label = 'Select Date Range',
-                  #   start = min_date,
-                  #   end = max_date,
-                  #   format = 'mm/dd/yyyy'
-                  ), 
-                  # selectInput(
-                    # inputId = 'region', 
-                    # label = 'Select Region',
-                    # choices = c( 'All', values |> distinct(parent_metro_region) |> pull(parent_metro_region) |> sort()),
-                    # selected = 1
-                  # )
-                # ),
-                
-                mainPanel(
-                  #plotlyOutput(outputId = 'value_line')
-                )
-              ))
-   )  
+    nav_panel('Other', 
+              
+    )
+    
+    
+  )
 )
 
-# sidebarPanel(
-#     sliderInput("bins",
-#                 "Number of bins:",
-#                 min = 1,
-#                 max = 50,
-#                 value = 30)
 
-# Show a plot of the generated distribution
+
+
+
+
