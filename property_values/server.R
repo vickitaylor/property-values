@@ -2,17 +2,17 @@
 function(input, output, session) {
   # dates are only the last day of the month but allowing any day for selection, so need to change the date to find in the table
   min_date <- reactive({
-    min_date <- ceiling_date(as.Date(input$date[1]), "month") - days(1)
+    min_date <- ceiling_date(as.Date(input$date[1]), 'month') - days(1)
   })
-  
+
   max_date <- reactive({
-    max_date <- ceiling_date(as.Date(input$date[2]), "month") - days(1)
+    max_date <- ceiling_date(as.Date(input$date[2]), 'month') - days(1)
   })
-  
+
   region_data <- reactive({
     region <- values
-    
-    if (input$region != "All") {
+
+    if (input$region != 'All') {
       region <- region |>
         filter(parent_metro_region == input$region) |>
         mutate(
@@ -27,13 +27,14 @@ function(input, output, session) {
           total_sales = sum(homes_sold, na.rm = TRUE),
           average_sales = mean(homes_sold, na.rm = TRUE)
         ) |>
-        ungroup() |> 
+        ungroup() |>
         mutate(
           tooltip_value = paste0(
-            'Month: ', month_name, ' ', year, '\n', 
-            'Est Value: ', dollar(estimated_value)), 
+            'Month: ', month_name, ' ', year, '\n',
+            'Est Value: ', dollar(estimated_value)
+          ),
           tooltip_sales = paste0(
-            'Month: ', month_name, ' ', year, '\n', 
+            'Month: ', month_name, ' ', year, '\n',
             'Properties Sold: ', comma(homes_sold)
           )
         )
@@ -51,21 +52,21 @@ function(input, output, session) {
           total_sales = sum(homes_sold, na.rm = TRUE),
           average_sales = mean(homes_sold, na.rm = TRUE)
         ) |>
-        ungroup() |> 
+        ungroup() |>
         mutate(
           tooltip_value = paste0(
-            'Month: ', month_name, ' ', year, '\n', 
-            'Est Value: ', dollar(estimated_value)), 
+            'Month: ', month_name, ' ', year, '\n',
+            'Est Value: ', dollar(estimated_value)
+          ),
           tooltip_sales = paste0(
-            'Month: ', month_name, ' ', year, '\n', 
+            'Month: ', month_name, ' ', year, '\n',
             'Properties Sold: ', comma(homes_sold)
           )
         )
     }
   })
-  
-  # region to two things, need to rename them to something
-  #
+
+
   output$value_line <- renderPlotly({
     plot_value <- region_data() |>
       filter(
@@ -78,12 +79,17 @@ function(input, output, session) {
         group = 1,
         text = tooltip_value
       )) +
-      geom_line()
-    
+      geom_line() +
+      labs(
+        title = 'Estimated Average Property Value', 
+        x = 'Month and Year'
+      ) +
+      scale_y_continuous('Estimated Average Value', labels= label_comma())
+
     ggplotly(plot_value, tooltip = 'text')
   })
-  
-  
+
+
   output$sales_line <- renderPlotly({
     plot_sales <- region_data() |>
       filter(
@@ -91,16 +97,21 @@ function(input, output, session) {
         period_end <= max_date()
       ) |>
       ggplot(aes(
-        x = period_end, 
-        y = homes_sold, 
-        group = 1, 
+        x = period_end,
+        y = homes_sold,
+        group = 1,
         text = tooltip_sales
       )) +
-      geom_line() 
-    
+      geom_line() + 
+      labs(
+        title = 'Property Sales', 
+        x = 'Month and Year'
+      ) +
+      scale_y_continuous('Number of Sales', labels= label_comma())
+
     ggplotly(plot_sales, tooltip = 'text')
   })
-  
+
   output$month_bar <- renderPlotly({
     plot_month <- region_data() |>
       filter(
@@ -112,10 +123,29 @@ function(input, output, session) {
         total_sales = sum(total_sales, na.rm = TRUE),
         average_sales = mean(total_sales / n_distinct(year), na.rm = TRUE)
       ) |>
+      mutate(
+        tooltip_total_sales = paste0(
+          'Month: ', month_name, '\n',
+          'Total Properties Sold: ', comma(total_sales)
+        ),
+        tooltip_avgerage_sales = paste0(
+          'Month: ', month_name, '\n',
+          'Average Properties Sold: ', comma(average_sales)
+        ),
+        tooltip_monthly = ifelse(
+          input$agg_type == 'total_sales', tooltip_total_sales, tooltip_avgerage_sales
+        )
+      ) |>
       arrange(month_int) |>
-      ggplot(aes(x = month_name, y = get(input$agg_type), fill = month_name)) +
-      geom_bar(stat = "identity")
-    
-    ggplotly(plot_month)
+      ggplot(aes(x = month_name, y = get(input$agg_type), fill = month_name, text = tooltip_monthly)) +
+      geom_bar(stat = 'identity') + 
+      labs(
+        title = 'Property Sales by Month', 
+        x = 'Month', 
+        fill = 'Month'
+      ) +
+      scale_y_continuous('Number of Sales', labels= label_comma())
+
+    ggplotly(plot_month, tooltip = 'text')
   })
 }

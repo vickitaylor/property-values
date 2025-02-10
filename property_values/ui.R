@@ -2,6 +2,7 @@
 ui <- page_fluid(
   theme = bs_theme(version = 5, bootswatch = 'morph'),
   
+  
   # Application title
   titlePanel('Tennessee Property Valuations'),
   
@@ -11,19 +12,22 @@ ui <- page_fluid(
       'Valuation Over Time', 
       sidebarLayout(
         sidebarPanel(
+          width = 3, 
           dateRangeInput(
             inputId = 'date',
             label = 'Select Date Range',
             start = min_date,
             end = max_date,
             format = 'mm/dd/yyyy'
-          ), 
+          ),
+          # Select region dropdown
           selectInput(
             inputId = 'region', 
             label = 'Select Region',
             choices = c( 'All', values |> distinct(parent_metro_region) |> pull(parent_metro_region) |> sort()),
             selected = 1
           ),
+          # aggregation type, only appears on the sales by month tab
           conditionalPanel(
             condition = "input.tabs == 'Sales by Month'",
             radioButtons(
@@ -36,14 +40,26 @@ ui <- page_fluid(
           )
         ),
         mainPanel(
+          width = 9,
           tabsetPanel(
             id = 'tabs',
             tabPanel('Property Valuations',
-                     plotlyOutput(outputId = 'value_line'), 
-                     plotlyOutput(outputId = 'sales_line')
+                     plotlyOutput(
+                       outputId = 'value_line', 
+                       width = '100%', 
+                       height = '350px'
+                      ), 
+                     br(), 
+                     plotlyOutput(
+                       outputId = 'sales_line', 
+                       width = '100%', 
+                       height = '350px')
             ), 
             tabPanel('Sales by Month',
-                     plotlyOutput(outputId = 'month_bar')
+                     plotlyOutput(
+                       outputId = 'month_bar', 
+                       width = '100%', 
+                       height = '600px')
             )
           )
         ), 
