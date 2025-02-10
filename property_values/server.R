@@ -67,6 +67,53 @@ function(input, output, session) {
   })
 
 
+
+  output$card_val <- renderValueBox({
+    val_card <- region_data() |>
+      filter(
+        period_end >= min_date(),
+        period_end <= max_date()
+      ) |>
+      summarize(average_val = mean(estimated_value, na.rm = TRUE)) |> 
+        pull(average_val)
+
+    valueBox(
+      value = dollar(val_card),
+      subtitle = 'Average Estimated Value'
+    )
+ 
+  })
+  
+  output$card_sale <- renderValueBox({
+    val_card <- region_data() |>
+      filter(
+        period_end >= min_date(),
+        period_end <= max_date()
+      ) |>
+      summarize(average_sales = mean(homes_sold, na.rm = TRUE)) |> 
+      pull(average_sales)
+    valueBox(
+      value = comma(val_card), 
+      subtitle = 'Average Properties Sold'
+    )
+  })
+  
+  
+  output$card_cor <- renderValueBox({
+    cor_card <- region_data() 
+    cor_card <- cor_card |> 
+      filter(
+        period_end >= min_date(),
+        period_end <= max_date()
+      )
+    cor_value <- cor(cor_card$estimated_value, cor_card$homes_sold, use = 'complete.obs')
+    valueBox(
+      value = round(cor_value, 2), 
+      subtitle = 'Correlation between Estimated Value and Homes Sold'
+    )
+  })
+  
+  
   output$value_line <- renderPlotly({
     plot_value <- region_data() |>
       filter(
@@ -148,4 +195,15 @@ function(input, output, session) {
 
     ggplotly(plot_month, tooltip = 'text')
   })
+  
+
+  
 }
+
+
+
+
+
+
+
+
