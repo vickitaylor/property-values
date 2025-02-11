@@ -14,7 +14,7 @@ library(shinydashboard)
 
 
 
-values <- read_csv('../data/Tn_sales.csv')
+values <- read_csv('data/TN_sales.csv')
 
 
 min_date <- values |> 
