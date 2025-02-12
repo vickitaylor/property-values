@@ -12,7 +12,7 @@ library(lubridate)
 
 
 ```{r}
-values <- read_csv('../data/Tn_sales.csv')
+values <- read_csv('../property_values/data/TN_sales.csv')
 values
 ```
 
@@ -128,10 +128,27 @@ region
 
 
 
+```{r}
+cor_dis <- values |> 
+  group_by(parent_metro_region) |> 
+  summarize(cor_value = cor(estimated_value, homes_sold, use = 'complete.obs'))
+cor_dis
+```
+
+
+```{r}
+cor_dis |> 
+  arrange(cor_value)
+```
 
 
 
-
-
+```{r}
+values |>
+  mutate(month = month(period_end, label = TRUE, abbr = TRUE)) |> 
+  group_by(parent_metro_region, month) |> 
+  summarize(cor_value = cor(estimated_value, homes_sold, use = 'complete.obs'))
+# cor_dis
+```
 
 
