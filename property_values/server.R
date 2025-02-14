@@ -30,7 +30,8 @@ function(input, output, session) {
           estimated_value = mean(estimated_value, na.rm = TRUE),
           homes_sold = sum(homes_sold, na.rm = TRUE),
           total_sales = sum(homes_sold, na.rm = TRUE),
-          average_sales = mean(homes_sold, na.rm = TRUE)
+          average_sales = mean(homes_sold, na.rm = TRUE),
+          avg_sales_price = mean(median_sale_price, na.rm = TRUE)
         ) |>
         ungroup() |>
         mutate(
@@ -55,7 +56,8 @@ function(input, output, session) {
           estimated_value = mean(estimated_value, na.rm = TRUE),
           homes_sold = sum(homes_sold, na.rm = TRUE),
           total_sales = sum(homes_sold, na.rm = TRUE),
-          average_sales = mean(homes_sold, na.rm = TRUE)
+          average_sales = mean(homes_sold, na.rm = TRUE),
+          avg_sales_price = mean(median_sale_price, na.rm = TRUE)
         ) |>
         ungroup() |>
         mutate(
@@ -166,7 +168,7 @@ function(input, output, session) {
         title = 'Estimated Average Property Value', 
         x = 'Month and Year'
       ) +
-      scale_y_continuous('Estimated Average Value', labels= label_comma())
+      scale_y_continuous('Estimated Average Value', labels= label_dollar())
     
     ggplotly(plot_value, tooltip = 'text')
   })
@@ -186,7 +188,7 @@ function(input, output, session) {
       )) +
       geom_line() + 
       labs(
-        title = 'Property Sales', 
+        title = 'Total Property Sales', 
         x = 'Month and Year'
       ) +
       scale_y_continuous('Number of Sales', labels= label_comma())
@@ -203,35 +205,53 @@ function(input, output, session) {
       group_by(month_int, month_name) |>
       summarize(
         total_sales = sum(total_sales, na.rm = TRUE),
-        average_sales = mean(total_sales / n_distinct(year), na.rm = TRUE)
+        # average_sales = mean(total_sales / n_distinct(year), na.rm = TRUE), 
+        avg_sales_price = mean(avg_sales_price, na.rm = TRUE)
       ) |>
       mutate(
         tooltip_total_sales = paste0(
           'Month: ', month_name, '\n',
           'Total Properties Sold: ', comma(total_sales)
         ),
-        tooltip_avgerage_sales = paste0(
+        # tooltip_average_sales = paste0(
+        #   'Month: ', month_name, '\n',
+        #   'Average Properties Sold: ', comma(average_sales)
+        # ),
+        tooltip_avg_sales_price= paste0(
           'Month: ', month_name, '\n',
-          'Average Properties Sold: ', comma(average_sales)
+          'Average Sales price: ', dollar(avg_sales_price)
         ),
         tooltip_monthly = ifelse(
-          input$agg_type == 'total_sales', tooltip_total_sales, tooltip_avgerage_sales
+          input$agg_type == 'total_sales', tooltip_total_sales, tooltip_avg_sales_price
         )
       ) |>
       arrange(month_int) |>
       ggplot(aes(x = month_name, y = get(input$agg_type), fill = month_name, text = tooltip_monthly)) +
       geom_bar(stat = 'identity') + 
       labs(
-        title = 'Property Sales by Month', 
+        title = ifelse(
+          input$agg_type == 'total_sales',
+          'Total Property Sales by Month',
+          'Average Sales Price by Month'
+          ),
         x = 'Month', 
+        y = ifelse(
+          input$agg_type == 'total_sales',
+          'Number of Sales',
+          'Sales Price'
+        ),
         fill = 'Month'
       ) +
-      scale_y_continuous('Number of Sales', labels= label_comma())
+      scale_y_continuous(
+        labels = ifelse(
+          input$agg_type == 'total_sales',
+          label_comma(), 
+          label_dollar()
+        )
+        )
     
     ggplotly(plot_month, tooltip = 'text')
   })
-  
-  
   
 }
 

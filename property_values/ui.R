@@ -34,7 +34,8 @@ ui <- page_fluid(
               label = "Select Aggregation Type",
               choices = c(
                 "Total Sales" = "total_sales",
-                "Average Sales per Year" = "average_sales"
+                # "Average Sales per Year" = "average_sales", 
+                "Average Sales Price" = 'avg_sales_price'
               ),
               selected = "total_sales"
             )
