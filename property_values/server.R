@@ -1,17 +1,22 @@
+
+
+
+
+
 # Define server logic
 function(input, output, session) {
   # dates are only the last day of the month but allowing any day for selection, so need to change the date to find in the table
   min_date <- reactive({
     min_date <- ceiling_date(as.Date(input$date[1]), 'month') - days(1)
   })
-
+  
   max_date <- reactive({
     max_date <- ceiling_date(as.Date(input$date[2]), 'month') - days(1)
   })
-
+  
   region_data <- reactive({
     region <- values
-
+    
     if (input$region != 'All') {
       region <- region |>
         filter(parent_metro_region == input$region) |>
@@ -65,23 +70,32 @@ function(input, output, session) {
         )
     }
   })
-
-
-
-  output$card_val <- renderValueBox({
-    val_card <- region_data() |>
+  
+  
+  avg_value_change <- reactive({
+    change <- region_data() |> 
       filter(
         period_end >= min_date(),
         period_end <= max_date()
-      ) |>
-      summarize(average_val = mean(estimated_value, na.rm = TRUE)) |> 
-        pull(average_val)
-
+      ) |> 
+      group_by(year) |> 
+      summarize(avg_value = mean(estimated_value, na.rm = TRUE))
+    
+    if (nrow(change) < 2) return(0)
+    
+    change <- last(change$avg_value) - first(change$avg_value)
+    change
+  })
+  
+  
+  output$card_val <- renderValueBox({
+    val_card <- avg_value_change()
+    
     valueBox(
       value = dollar(val_card),
-      subtitle = 'Average Estimated Value'
+      subtitle = 'Change in Average Value'
     )
- 
+    
   })
   
   output$card_sale <- renderValueBox({
@@ -132,11 +146,11 @@ function(input, output, session) {
         x = 'Month and Year'
       ) +
       scale_y_continuous('Estimated Average Value', labels= label_comma())
-
+    
     ggplotly(plot_value, tooltip = 'text')
   })
-
-
+  
+  
   output$sales_line <- renderPlotly({
     plot_sales <- region_data() |>
       filter(
@@ -155,10 +169,10 @@ function(input, output, session) {
         x = 'Month and Year'
       ) +
       scale_y_continuous('Number of Sales', labels= label_comma())
-
+    
     ggplotly(plot_sales, tooltip = 'text')
   })
-
+  
   output$month_bar <- renderPlotly({
     plot_month <- region_data() |>
       filter(
@@ -192,11 +206,11 @@ function(input, output, session) {
         fill = 'Month'
       ) +
       scale_y_continuous('Number of Sales', labels= label_comma())
-
+    
     ggplotly(plot_month, tooltip = 'text')
   })
   
-
+  
   
 }
 

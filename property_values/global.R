@@ -24,3 +24,11 @@ min_date <- values |>
 max_date <- values |> 
   summarize(max_date = max(period_end)) |> 
   pull(max_date)
+
+
+values <- values |> 
+  mutate(
+    month_int = month(period_end),
+    month_name = month(period_end, label = TRUE, abbr = TRUE),
+    year = year(period_end)
+  )
