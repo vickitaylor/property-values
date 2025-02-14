@@ -1,12 +1,36 @@
 # Define UI for application
 ui <- page_fluid(
   theme = bs_theme(version = 5, bootswatch = "morph"),
+  
+  tags$style(HTML("
+    .headings {
+      text-align: center;
+     }
+   .image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: none;
+  }
+  ")),
+  
+  
 
   # Application title
   titlePanel("Tennessee Property Valuations"),
 
   # Sidebar with a date selection input
   navset_pill(
+    nav_panel(
+      "Intro",
+        uiOutput(
+        'heading_text', 
+        class = 'headings'), 
+      uiOutput('intro_text'), 
+      img(
+        class = 'image', 
+        src = "house.png", height = "25%", width = "25%") 
+    ),
     nav_panel(
       "Valuation Over Time",
       sidebarLayout(
@@ -102,6 +126,10 @@ ui <- page_fluid(
         ),
       )
     ),
-    nav_panel("Other",)
+    nav_panel(
+      "Resources",
+      uiOutput('source_text')
+    
+    )
   )
 )

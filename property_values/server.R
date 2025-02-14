@@ -253,11 +253,52 @@ function(input, output, session) {
     ggplotly(plot_month, tooltip = 'text')
   })
   
+  
+  output$source_text <- renderUI({
+    HTML('
+      <br>
+      <h3>Data Sources</h3>
+      <ul>
+        <li><a href = "https://www.zillow.com/research/data/">Zillow - ZHVI All Homes Time Series, Smoothed, Seasonally Adjusted ($)</a></li>
+        <li><a href = "https://www.redfin.com/news/data-center/">Redfin - Region Data (Metro)</a></li>
+      </ul>
+    ')
+  })
+  
+  
+  output$heading_text <- renderUI({
+    HTML("
+      <br>
+      <h2>A Look Into Tennesse Property Vales and Sales</h2>
+      <h3>2012 to 2024</h3>
+      <h6 ><em>Let's start exploring Tennessee’s real estate trends!</em></h6>
+    ")
+  })
+  output$intro_text <- renderUI({
+    HTML("
+      <br>
+      <p>This interactive app allows you to explore property valuations, home sales trends, and real estate market behavior across Tennessee.</p>
+      <br>
+      <h5>App Highlights</h5>
+      <ul>
+        <li>Track property values and sales over time</li>
+        <li>Analyze seasonality in sales volume and sales price</li>
+        <li>Look into the relationship between home sales and values</li>
+        <li>Compare trends by area and time period</li>
+      </ul>
+      <br>
+      <h5>How To Use</h5>
+      <ul>
+        <li>Track property values and sales over time</li>
+        <li>Analyze seasonality in sales volume and sales price</li>
+        <li>Look into the relationship between home sales and values</li>
+        <li>Compare trends by area and time</li>
+      </ul>
+    ")
+  })
+  
+  
 }
-
-
-
-
 
 
 
