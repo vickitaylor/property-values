@@ -87,30 +87,51 @@ function(input, output, session) {
     change
   })
   
+
+  avg_growth_rate <- reactive({
+    growth <- region_data() |> 
+      filter(
+        period_end >= min_date(),
+        period_end <= max_date()
+      ) |>
+      group_by(year) |> 
+      summarize(avg_value = mean(estimated_value, na.rm = TRUE)) 
+    
+    if (nrow(growth) < 2) return(0)  
+    
+    start_value <- first(growth$avg_value)
+    end_value <- last(growth$avg_value)
+    num_years <- max(growth$year) - min(growth$year)
+    
+    if (num_years == 0) return(0)  
+    
+    growth_rate <- ((end_value / start_value)^(1 / num_years)) - 1
+    growth_rate
+  })
+  
+  
+  
+
+  
+  output$card_sale <- renderValueBox({
+    val_card <- avg_growth_rate()
+    
+    valueBox(
+      value = paste0(round(val_card * 100, 2), '%'), 
+      subtitle = 'Annual Growth Rate in Estimated Property Value'
+    )
+  })
+  
   
   output$card_val <- renderValueBox({
     val_card <- avg_value_change()
     
     valueBox(
-      value = dollar(val_card),
-      subtitle = 'Change in Average Value'
+      value = ifelse(is.na(val_card), '-', dollar(val_card)),
+      subtitle = 'Change in Average Estimated Property Value'
     )
-    
   })
   
-  output$card_sale <- renderValueBox({
-    val_card <- region_data() |>
-      filter(
-        period_end >= min_date(),
-        period_end <= max_date()
-      ) |>
-      summarize(average_sales = mean(homes_sold, na.rm = TRUE)) |> 
-      pull(average_sales)
-    valueBox(
-      value = comma(val_card), 
-      subtitle = 'Average Properties Sold'
-    )
-  })
   
   
   output$card_cor <- renderValueBox({

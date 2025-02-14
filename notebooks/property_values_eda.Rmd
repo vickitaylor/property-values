@@ -166,6 +166,13 @@ values_test
 
 
 
+```{r}
+values_test  |> 
+  group_by(year) |> 
+  filter(period_end >= '2020-01-01',
+         parent_metro_region == 'Morristown, TN') |> 
+   summarize(avg_value = mean(estimated_value, na.rm = TRUE))
+```
 
 
 

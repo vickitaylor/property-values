@@ -53,14 +53,14 @@ ui <- page_fluid(
                   column(
                     4,
                     valueBoxOutput(
-                      "card_val",
+                      "card_sale",
                       width = 12
                     )
                   ),
                   column(
                     4,
                     valueBoxOutput(
-                      "card_sale",
+                      "card_val",
                       width = 12
                     )
                   ), 
