@@ -29,7 +29,7 @@ ui <- page_fluid(
       uiOutput('intro_text'), 
       img(
         class = 'image', 
-        src = "house.png", height = "25%", width = "25%") 
+        src = "house.png", height = "15%", width = "15%") 
     ),
     nav_panel(
       "Valuation Over Time",

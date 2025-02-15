@@ -287,12 +287,19 @@ function(input, output, session) {
         <li>Compare trends by area and time period</li>
       </ul>
       <br>
-      <h5>How To Use</h5>
+      <h5>How To Use:</h5>
       <ul>
-        <li>Track property values and sales over time</li>
-        <li>Analyze seasonality in sales volume and sales price</li>
-        <li>Look into the relationship between home sales and values</li>
-        <li>Compare trends by area and time</li>
+        <li>Select a data range</li>
+        <li>Select a metro region or all for the whole state</li>
+        <li>Property Valuations:</li>  
+        <ul>
+        <li>Shows trends in valuation and sales</li>
+        </ul>
+        <li>Sales by Month:</li>
+        <ul>
+        <li>Shows season patterns with sale volume and price</li>
+        </ul>
+        <li>Resources has links to data sources used</li>
       </ul>
     ")
   })
