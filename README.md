@@ -35,10 +35,9 @@ Monthly Sales Tab
 
 
 ## Insights 
-- 
 - Weak correlation between valuation and sales. 
     - For the whole time period Nashville was least correlated and Morristown had the strongest. (Note: correlation will change with the time period is decreased) 
-- Summer months have a higher 
+- Summer months have a higher property sales rates and values
 
 ## Data Sources
 - Valuation, used file ZHVI All Homes Time Series, Smoothed, Seasonally Adjusted($) - [Zillow](https://www.zillow.com/research/data/)
